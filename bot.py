@@ -11,6 +11,7 @@ import logging
 import os
 import platform
 import random
+import re
 import sys
 
 import aiosqlite
@@ -68,8 +69,8 @@ It is recommended to use slash commands and therefore not use prefix commands.
 
 If you want to use prefix commands, make sure to also enable the intent below in the Discord developer portal.
 """
-# intents.message_content = True
-
+intents.message_content = True
+cogs = []
 # Setup both of the loggers
 
 
@@ -158,6 +159,7 @@ class DiscordBot(commands.Bot):
         for file in os.listdir(f"{os.path.realpath(os.path.dirname(__file__))}/cogs"):
             if file.endswith(".py"):
                 extension = file[:-3]
+                cogs.append(extension)
                 try:
                     await self.load_extension(f"cogs.{extension}")
                     self.logger.info(f"Loaded extension '{extension}'")
@@ -210,6 +212,12 @@ class DiscordBot(commands.Bot):
         """
         if message.author == self.user or message.author.bot:
             return
+        msg_content = re.sub(r"\b(?:https?|ftp)://\S+|<[^>]+>", '', message.content)
+        msg_file_exists = os.path.isfile(f'Functions/{message.channel.id}.txt')
+        if not msg_content == '':
+            with open(f'Functions/{message.channel.id}.txt', 'a' if msg_file_exists else 'w', encoding='utf-8') as file:
+                file.write(f'{msg_content}\n')
+            # print(msg_content)
         await self.process_commands(message)
 
     async def on_command_completion(self, context: Context) -> None:
@@ -291,3 +299,4 @@ load_dotenv()
 
 bot = DiscordBot()
 bot.run(os.getenv("TOKEN"))
+bot.unload_extension()

@@ -77,6 +77,8 @@ class Summary(commands.Cog, name="summary"):
         for m in msg:
             if not m.attachments or m.embeds:
                 msg_content_lst.append(m.content)
+
+        # This line cleans up text, removing any special characters so it can be used.
         msg_content_lst_trim = [re.sub(r"\b(?:https?|ftp)://\S+|<[^>]+>", '', i) for i in msg_content_lst]
         msg_file_exists = os.path.isfile(f'Functions/{context.channel.id}.txt')
         msg_file = open(f'Functions/{ch.id}.txt', 'a' if msg_file_exists else 'w', encoding='utf-8')

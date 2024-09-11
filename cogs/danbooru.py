@@ -14,7 +14,7 @@ class Danbooru(commands.Cog, name="danbooru"):
         name="danbooru",
         description="Returns an image from danbooru",
     )
-    async def danbooru(self, context: Context, tags: str = 'femboy', rating: str = 'e') -> None:
+    async def danbooru(self, context: Context, tags: str = 'femboy', rating: str = 's') -> None:
         await context.defer()
         if not context.channel.is_nsfw():
             embed = discord.Embed(
